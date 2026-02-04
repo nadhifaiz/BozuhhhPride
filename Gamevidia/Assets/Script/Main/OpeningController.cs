@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class OpeningController : MonoBehaviour
 {
-    [SerializeField] private UIManager uiManager;
+    [SerializeField] private MainUIManager uiManager;
 
     [Header("TextDialogue")]
     [SerializeField] private List<string> openingDialogueLines;

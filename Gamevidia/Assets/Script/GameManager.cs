@@ -3,8 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Total Levels")]
+    [SerializeField] private int totalLevels = 2;
+
     private int level = 0;
-    private int stage = 0;
+    public int stage { get; private set; }
 
     public static GameManager Instance { get; private set; }
 
@@ -37,6 +40,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void GoToNextLevel()
+    {
+        if (level < totalLevels)
+        {
+            level++;
+            stage = 0; // reset stage for new level
+            SceneManager.LoadScene($"Level-{level}");
+        }
+        else
+        {
+            Debug.Log("Already at the highest level.");
+            SceneManager.LoadScene("EndingScene");
+        }
+    }
+
     public bool IsFirstLaunch()
     {
         if (level == 0 && stage == 0)
@@ -45,6 +63,16 @@ public class GameManager : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public void SetStage(int value)
+    {
+        stage = value;
+    }
+
+    public void SetLevel(int value)
+    {
+        level = value;
     }
 
 }

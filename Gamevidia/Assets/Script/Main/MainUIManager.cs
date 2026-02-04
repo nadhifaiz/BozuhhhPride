@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class MainUIManager : MonoBehaviour
 {
     [Header("Panels")]
     [SerializeField] private GameObject mainMenuPanel;

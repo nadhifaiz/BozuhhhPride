@@ -9,7 +9,9 @@ public class NarratorManager : MonoBehaviour
     public static NarratorManager Instance { get; private set; }
 
     [Header("UI")]
-    [SerializeField] private TextMeshProUGUI narratorText;
+    [SerializeField] private GameObject canvasPrefab;
+    private GameObject canvasInstance;
+    private TextMeshProUGUI narratorText;
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -29,6 +31,8 @@ public class NarratorManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        EnsureCanvas();
     }
 
     public void PlayDialogue(List<string> lines)
@@ -39,6 +43,7 @@ public class NarratorManager : MonoBehaviour
 
     private IEnumerator PlayDialogueRoutine(List<string> lines)
     {
+        EnsureCanvas();
         foreach (var line in lines)
         {
             narratorText.text = line;
@@ -52,5 +57,21 @@ public class NarratorManager : MonoBehaviour
 
         narratorText.text = "";
         OnDialogueFinished?.Invoke();
+    }
+
+    private void EnsureCanvas()
+    {
+        if (canvasInstance == null && canvasPrefab != null)
+        {
+            canvasInstance = Instantiate(canvasPrefab, transform);
+        }
+
+        if (narratorText == null && canvasInstance != null)
+            narratorText = canvasInstance.GetComponentInChildren<TextMeshProUGUI>(true);
+
+        if (narratorText == null)
+        {
+            Debug.LogWarning("NarratorManager: TextMeshProUGUI not found. Assign it or provide a Canvas prefab with a TextMeshProUGUI child.");
+        }
     }
 }
