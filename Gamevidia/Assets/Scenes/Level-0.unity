@@ -889,9 +889,9 @@ MonoBehaviour:
   cranePrefab: {fileID: 6871264814322414259, guid: 8d80f89a213e90b49b1c02df3b0d9b9d, type: 3}
   goalPrefab: {fileID: 4302627695533760540, guid: 3035f2b39c72f004eaabb0cd58ca0e96, type: 3}
   worldParent: {fileID: 1648285732}
-  stagePanel: {fileID: 246534579}
   tutorialIconManager: {fileID: 1783271201}
-  tutorialIconDelay: 0.5
+  movementTutorialDelay: 0.5
+  grabSpoilerDelay: 4
   maxDropsBeforeHint: 3
   hintDelay1: 5
   hintDelay2: 10
@@ -2313,19 +2313,19 @@ MonoBehaviour:
   - Okay now you can press the button
   - Thank you
   failDialogEarly:
-  - Hi GUYYY!
-  - I Haven't complete my self yet!
-  - But you have already click the button?!!
-  - are you kidding?
-  - Let's Start again, and be quiet!
+  - O...kay
+  - I haven't completed my dialogue yet
+  - But you already pressed that button..
+  - You're kidding right...
+  - Okay let's start again, and please listen to me first..
   dialogueAfterFailEarly:
-  - Humphh!
-  - I Will Explain it certainly
-  - Dont Press anything!!!
+  - You disturb me again...
+  - Okay then i'll make it simple for you
+  - Do not press anything!
   failDialogAfter:
   - "I knew you\u2019d do that\u2026"
   - "I just hoped you wouldn\u2019t"
-  - "Let\u2019s start again, DON\u2019T click on anything"
+  - "Let\u2019s start again, DON\u2019T press on anything"
   dialogD:
   - ...
   - You can really press the button now
@@ -2334,29 +2334,30 @@ MonoBehaviour:
   - Okay do you want ME to press it for you?
   - Y-you know what, let me just-
   AtClickConfusing:
-  - Humm, stop clicking like that, mate!
-  - That won't help
-  - Just wait a moment
+  - Hmmm
+  - You're clicking...everything
+  - I don't think that's helping tho...
   AtClickAnnoying:
-  - Enough!!! Can't you hear me?!!
-  - I've kicked you out of this experiment
+  - Okay i get it
+  - You're...excited
+  - But let's calm down a little bit can we
   AtFakeButtonUp:
-  - Oops, I think this is outside the briefing
-  - Please don't press that button, mate
-  - It's a trap!!!
-  - Trust me!
-  - You just need to wait a little while
+  - Uh...i think this isn't in the manual
+  - Please don't press that button
+  - It's a trap!
+  - The game system's trying to trick you
+  - Trust me pleasee..
+  - You just have to wait a bit longer
   AtClickFakeButton:
-  - Urgh bro
-  - What did i say!!
+  - ...
+  - Told you...
   - The button is fake
-  - you dont listened to me.
+  - You're not listening...
   successDialogWithFakeButton:
-  - Alright, Alright...
-  - The RIGHT Button has showed up bro
-  - You just need to click the button that says "Continue"
-  - You've already succes passed this stage
-  - Congratulation!
+  - Okay
+  - The REAL button has showed up
+  - You just have to press the button that says "Continue"
+  - And you'll pass this stage
   idleToSuccessTime: 9
   waitAfterBToD: 4
   waitAfterDToE: 4
