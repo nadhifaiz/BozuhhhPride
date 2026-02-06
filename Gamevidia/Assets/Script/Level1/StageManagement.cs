@@ -97,6 +97,21 @@ public class StageManagement : MonoBehaviour
         Debug.Log("Switched to Game Panel B");
     }
 
+    public void ShowDifficultyPanel()
+    {
+        difficultyPanel.SetActive(true);
+        gamePanel_A.SetActive(false);
+        gamePanel_B.SetActive(false);
+
+        leftButton.gameObject.SetActive(true);
+        rightButton.gameObject.SetActive(true);
+
+        easyButton.gameObject.SetActive(false);
+        hardButton.GameObject().SetActive(false);
+
+        Debug.Log("Returned to Difficulty Selection Panel");
+    }
+
     private void NotifyGameControllers()
     {
         // Kirim notifikasi ke game controllers (jika diperlukan)
