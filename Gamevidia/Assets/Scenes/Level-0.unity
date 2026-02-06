@@ -859,32 +859,72 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageManager: {fileID: 184660123}
   openingDialogue:
-  - Okay a classic crane game
-  - Well I guess you just have to move the claw
-  - "But\u2026 yeah I forgot how"
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   narratorShutdownMovement:
-  - Hey, no!
-  - "Don\u2019t spoil it"
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   narratorShutdownGrab:
-  - HEYY HEYYY
-  - Stop helping them
-  - This is exactly why I hate systems
-  - "here, now you can\u2019t spoil\u2026. unnecesarry things"
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   afterThreeDrops:
-  - "Huh, that wasn\u2019t supposed to happen"
-  - Okay, maybe the claw is just bad
-  - "Or maybe\u2026 you don\u2019t need it"
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   hintCantTouch:
-  - Owhh-
-  - "You\u2019re\u2026 allowed to do that?"
-  - Interesting
-  - Oh well, task failed successfully I guess
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   successQuick:
-  - "I never said you couldn\u2019t touch things"
-  - "\u2026did i?"
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   successSlow:
-  - Yeah, well
-  - That was obvious
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   dollPrefab: {fileID: 4274049845013960367, guid: 930ac006701b84e43a8a5cd180d6c99d, type: 3}
   cranePrefab: {fileID: 6871264814322414259, guid: 8d80f89a213e90b49b1c02df3b0d9b9d, type: 3}
   goalPrefab: {fileID: 4302627695533760540, guid: 3035f2b39c72f004eaabb0cd58ca0e96, type: 3}
@@ -1611,7 +1651,7 @@ GameObject:
   - component: {fileID: 1654649193}
   - component: {fileID: 1654649192}
   m_Layer: 5
-  m_Name: Stage1
+  m_Name: AButtonStage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2302,62 +2342,152 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageManager: {fileID: 184660123}
   openingDialog:
-  - Okay, first stage
-  - "It\u2019s\u2026 quite simple"
-  - All you have to do is just wait
-  - "...Just wait\u2026"
-  - "Don\u2019t click on anything"
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   successDialogB:
-  - See, this is easy right?
-  - "I didn\u2019t expect you to listen to me honestly"
-  - Okay now you can press the button
-  - Thank you
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   failDialogEarly:
-  - O...kay
-  - I haven't completed my dialogue yet
-  - But you already pressed that button..
-  - You're kidding right...
-  - Okay let's start again, and please listen to me first..
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   dialogueAfterFailEarly:
-  - You disturb me again...
-  - Okay then i'll make it simple for you
-  - Do not press anything!
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   failDialogAfter:
-  - "I knew you\u2019d do that\u2026"
-  - "I just hoped you wouldn\u2019t"
-  - "Let\u2019s start again, DON\u2019T press on anything"
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   dialogD:
-  - ...
-  - You can really press the button now
-  - Trust me please
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   dialogE:
-  - Okay do you want ME to press it for you?
-  - Y-you know what, let me just-
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   AtClickConfusing:
-  - Hmmm
-  - You're clicking...everything
-  - I don't think that's helping tho...
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   AtClickAnnoying:
-  - Okay i get it
-  - You're...excited
-  - But let's calm down a little bit can we
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   AtFakeButtonUp:
-  - Uh...i think this isn't in the manual
-  - Please don't press that button
-  - It's a trap!
-  - The game system's trying to trick you
-  - Trust me pleasee..
-  - You just have to wait a bit longer
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   AtClickFakeButton:
-  - ...
-  - Told you...
-  - The button is fake
-  - You're not listening...
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   successDialogWithFakeButton:
-  - Okay
-  - The REAL button has showed up
-  - You just have to press the button that says "Continue"
-  - And you'll pass this stage
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
   idleToSuccessTime: 9
   waitAfterBToD: 4
   waitAfterDToE: 4
