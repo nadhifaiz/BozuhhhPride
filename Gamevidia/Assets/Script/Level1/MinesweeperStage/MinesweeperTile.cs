@@ -49,6 +49,7 @@ public class MinesweeperTile : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         if (isRevealed) return;
+        if (controller == null) return;
 
         // Right click = flag (only in easy mode for the twist!)
         if (eventData.button == PointerEventData.InputButton.Right)

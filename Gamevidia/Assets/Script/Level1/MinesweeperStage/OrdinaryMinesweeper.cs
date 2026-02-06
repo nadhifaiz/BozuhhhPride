@@ -6,13 +6,19 @@ using TMPro;
 
 public class OrdinaryMinesweeper : MonoBehaviour
 {
-    public static OrdinaryMinesweeper Instance { get; private set; }
-
     [Header("UI References")]
     [SerializeField] private Transform gridParent;
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private TextMeshProUGUI difficultyText;
     [SerializeField] private Button switchToPanelA_Button;
+
+    [Header("External References")]
+    [SerializeField] private StageManagement stageManagement;
+
+    [Header("Grid Layout")]
+    [SerializeField] private Vector2 cellSize = new Vector2(64f, 64f);
+    [SerializeField] private Vector2 cellSpacing = new Vector2(4f, 4f);
+    [SerializeField] private bool autoCellSizeFromPrefab = true;
 
     [Header("Grid Settings")]
     [SerializeField] private int gridWidth = 8;
@@ -23,6 +29,10 @@ public class OrdinaryMinesweeper : MonoBehaviour
     [Header("Hard Mode Patterns")]
     [SerializeField] private List<MinePattern> minePatterns = new List<MinePattern>();
 
+    [Header("Dialogue")]
+    [SerializeField] private DialogueConfig dialogueConfig = new DialogueConfig();
+    [SerializeField] private float fallbackDialogueDelayPerLine = 2f;
+
     // Game State
     private MinesweeperTile[,] tiles;
     private bool[,] bombs;
@@ -31,6 +41,7 @@ public class OrdinaryMinesweeper : MonoBehaviour
     private bool isHardMode;
     private bool gameStarted;
     private bool gameOver;
+    private int totalBombs;
 
     // Hard Mode State
     private MinePattern currentPattern;
@@ -39,20 +50,12 @@ public class OrdinaryMinesweeper : MonoBehaviour
     // Easy Mode State
     private int easyModeFlagCount = 0;
 
-    private void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-    }
-
     private void Start()
     {
         // Get difficulty from StageManagement
-        if (StageManagement.Instance != null)
+        if (stageManagement != null)
         {
-            currentDifficulty = StageManagement.Instance.CurrentDifficulty;
+            currentDifficulty = stageManagement.CurrentDifficulty;
             isHardMode = (currentDifficulty == StageManagement.Difficulty.Hard);
         }
 
@@ -76,6 +79,8 @@ public class OrdinaryMinesweeper : MonoBehaviour
 
         // Create grid
         CreateGrid();
+        if (tiles == null)
+            yield break;
 
         // Generate bombs based on difficulty
         if (isHardMode)
@@ -101,6 +106,20 @@ public class OrdinaryMinesweeper : MonoBehaviour
 
     private void CreateGrid()
     {
+        if (gridWidth <= 0 || gridHeight <= 0)
+        {
+            Debug.LogWarning($"Invalid grid size {gridWidth}x{gridHeight}. Grid will not be created.");
+            return;
+        }
+
+        if (gridParent == null || tilePrefab == null)
+        {
+            Debug.LogWarning("Grid parent or tile prefab is not assigned. Grid will not be created.");
+            return;
+        }
+
+        ConfigureGridLayout();
+
         tiles = new MinesweeperTile[gridWidth, gridHeight];
         bombs = new bool[gridWidth, gridHeight];
         adjacentBombCount = new int[gridWidth, gridHeight];
@@ -128,10 +147,64 @@ public class OrdinaryMinesweeper : MonoBehaviour
         }
     }
 
+    private void ConfigureGridLayout()
+    {
+        if (gridParent == null)
+            return;
+
+        RectTransform gridRect = gridParent as RectTransform;
+        if (gridRect == null)
+            return;
+
+        GridLayoutGroup gridLayout = gridParent.GetComponent<GridLayoutGroup>();
+        if (gridLayout == null)
+            gridLayout = gridParent.gameObject.AddComponent<GridLayoutGroup>();
+
+        LayoutGroup[] otherLayouts = gridParent.GetComponents<LayoutGroup>();
+        foreach (var layout in otherLayouts)
+        {
+            if (layout != gridLayout)
+                layout.enabled = false;
+        }
+
+        ContentSizeFitter contentSizeFitter = gridParent.GetComponent<ContentSizeFitter>();
+        if (contentSizeFitter != null)
+            contentSizeFitter.enabled = false;
+
+        if (autoCellSizeFromPrefab && tilePrefab != null)
+        {
+            RectTransform prefabRect = tilePrefab.GetComponent<RectTransform>();
+            if (prefabRect != null)
+                cellSize = prefabRect.sizeDelta;
+        }
+
+        gridLayout.cellSize = cellSize;
+        gridLayout.spacing = cellSpacing;
+        gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        gridLayout.constraintCount = gridWidth;
+        gridLayout.childAlignment = TextAnchor.MiddleCenter;
+
+        float totalWidth = (gridWidth * cellSize.x) + Mathf.Max(0, gridWidth - 1) * cellSpacing.x;
+        float totalHeight = (gridHeight * cellSize.y) + Mathf.Max(0, gridHeight - 1) * cellSpacing.y;
+
+        gridRect.pivot = new Vector2(0.5f, 0.5f);
+        gridRect.anchorMin = new Vector2(0.5f, 0.5f);
+        gridRect.anchorMax = new Vector2(0.5f, 0.5f);
+        gridRect.sizeDelta = new Vector2(totalWidth, totalHeight);
+        gridRect.anchoredPosition = Vector2.zero;
+    }
+
     private void GenerateEasyModeBombs()
     {
+        int totalCells = gridWidth * gridHeight;
+        int targetBombs = Mathf.Min(easyBombCount, totalCells);
+        if (easyBombCount > totalCells)
+        {
+            Debug.LogWarning($"Easy bomb count ({easyBombCount}) exceeds grid cells ({totalCells}). Clamping.");
+        }
+
         int bombsPlaced = 0;
-        while (bombsPlaced < easyBombCount)
+        while (bombsPlaced < targetBombs)
         {
             int x = Random.Range(0, gridWidth);
             int y = Random.Range(0, gridHeight);
@@ -142,6 +215,8 @@ public class OrdinaryMinesweeper : MonoBehaviour
                 bombsPlaced++;
             }
         }
+
+        totalBombs = bombsPlaced;
     }
 
     private void GenerateHardModeBombs()
@@ -162,6 +237,12 @@ public class OrdinaryMinesweeper : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            Debug.LogWarning("Hard mode is active but no mine pattern is assigned.");
+        }
+
+        totalBombs = CountBombs();
     }
 
     private void CalculateAdjacentBombs()
@@ -199,6 +280,7 @@ public class OrdinaryMinesweeper : MonoBehaviour
     public void OnTileClicked(int x, int y)
     {
         if (gameOver || !gameStarted) return;
+        if (bombs == null || tiles == null) return;
 
         if (bombs[x, y])
         {
@@ -217,6 +299,7 @@ public class OrdinaryMinesweeper : MonoBehaviour
     public void OnTileFlagged(int x, int y)
     {
         if (gameOver || !gameStarted) return;
+        if (bombs == null || tiles == null) return;
 
         // Easy mode: Flag = instant lose!
         if (!isHardMode)
@@ -244,33 +327,7 @@ public class OrdinaryMinesweeper : MonoBehaviour
     {
         gameOver = true;
 
-        // Show bomb at flagged location
-        List<NarratorManager.DialogueLine> dialogue = new List<NarratorManager.DialogueLine>();
-
-        switch (easyModeFlagCount)
-        {
-            case 1:
-                dialogue.Add(new NarratorManager.DialogueLine { text = "...oh" });
-                dialogue.Add(new NarratorManager.DialogueLine { text = "That's unfortunate" });
-                break;
-            case 2:
-                dialogue.Add(new NarratorManager.DialogueLine { text = "You're very confident with that flag" });
-                dialogue.Add(new NarratorManager.DialogueLine { text = "I…admire that" });
-                break;
-            case 3:
-                dialogue.Add(new NarratorManager.DialogueLine { text = "Maybe don't mark things you're afraid of" });
-                dialogue.Add(new NarratorManager.DialogueLine { text = "...just a thought" });
-                break;
-            default:
-                dialogue.Add(new NarratorManager.DialogueLine { text = "Wow" });
-                dialogue.Add(new NarratorManager.DialogueLine { text = "You really trusted that flag" });
-                break;
-        }
-
-        if (NarratorManager.Instance != null)
-            NarratorManager.Instance.PlayDialogue(dialogue);
-
-        yield return new WaitForSeconds(3f);
+        yield return StartCoroutine(PlayDialogueAndWait(GetEasyFlagDialogue()));
 
         // Restart game
         RestartGame();
@@ -281,14 +338,7 @@ public class OrdinaryMinesweeper : MonoBehaviour
         gameOver = true;
         tiles[x, y].ShowBomb();
 
-        List<NarratorManager.DialogueLine> dialogue = new List<NarratorManager.DialogueLine>();
-        dialogue.Add(new NarratorManager.DialogueLine { text = "Focus dude…" });
-        dialogue.Add(new NarratorManager.DialogueLine { text = "Let's try this again" });
-
-        if (NarratorManager.Instance != null)
-            NarratorManager.Instance.PlayDialogue(dialogue);
-
-        yield return new WaitForSeconds(3f);
+        yield return StartCoroutine(PlayDialogueAndWait(dialogueConfig.easyBombHit));
 
         RestartGame();
     }
@@ -298,29 +348,7 @@ public class OrdinaryMinesweeper : MonoBehaviour
         gameOver = true;
         tiles[x, y].ShowBomb();
 
-        List<NarratorManager.DialogueLine> dialogue = new List<NarratorManager.DialogueLine>();
-
-        switch (hardModeDeathCount)
-        {
-            case 1:
-                dialogue.Add(new NarratorManager.DialogueLine { text = "Expected" });
-                break;
-            case 2:
-                dialogue.Add(new NarratorManager.DialogueLine { text = "Observe and remember" });
-                break;
-            case 3:
-                dialogue.Add(new NarratorManager.DialogueLine { text = "Did you realize?" });
-                break;
-            default:
-                dialogue.Add(new NarratorManager.DialogueLine { text = "Same board" });
-                dialogue.Add(new NarratorManager.DialogueLine { text = "Not a bug" });
-                break;
-        }
-
-        if (NarratorManager.Instance != null)
-            NarratorManager.Instance.PlayDialogue(dialogue);
-
-        yield return new WaitForSeconds(3f);
+        yield return StartCoroutine(PlayDialogueAndWait(GetHardBombDialogue()));
 
         RestartGame();
     }
@@ -349,7 +377,7 @@ public class OrdinaryMinesweeper : MonoBehaviour
     private void CheckWinCondition()
     {
         int revealedCount = 0;
-        int totalSafeTiles = (gridWidth * gridHeight) - (isHardMode ? hardBombCount : easyBombCount);
+        int totalSafeTiles = (gridWidth * gridHeight) - totalBombs;
 
         for (int y = 0; y < gridHeight; y++)
         {
@@ -366,6 +394,20 @@ public class OrdinaryMinesweeper : MonoBehaviour
         }
     }
 
+    private int CountBombs()
+    {
+        int count = 0;
+        for (int y = 0; y < gridHeight; y++)
+        {
+            for (int x = 0; x < gridWidth; x++)
+            {
+                if (bombs[x, y])
+                    count++;
+            }
+        }
+        return count;
+    }
+
     private void OnGameWon()
     {
         gameOver = true;
@@ -374,52 +416,20 @@ public class OrdinaryMinesweeper : MonoBehaviour
 
     private IEnumerator PlayIntroDialogue()
     {
-        List<NarratorManager.DialogueLine> dialogue = new List<NarratorManager.DialogueLine>();
+        List<NarratorManager.DialogueLine> dialogue = isHardMode
+            ? dialogueConfig.introHard
+            : dialogueConfig.introEasy;
 
-        if (isHardMode)
-        {
-            dialogue.Add(new NarratorManager.DialogueLine { text = "Okay" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "High difficulty" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "No numbers" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "Observe, remember, and good luck" });
-        }
-        else
-        {
-            dialogue.Add(new NarratorManager.DialogueLine { text = "Okay, this one should be easy" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "You know what, i won't interfere you here" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "Just.." });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "Focus" });
-        }
-
-        if (NarratorManager.Instance != null)
-            NarratorManager.Instance.PlayDialogue(dialogue);
-
-        yield return new WaitForSeconds(dialogue.Count * 2f);
+        yield return StartCoroutine(PlayDialogueAndWait(dialogue));
     }
 
     private IEnumerator PlayWinDialogue()
     {
-        List<NarratorManager.DialogueLine> dialogue = new List<NarratorManager.DialogueLine>();
+        List<NarratorManager.DialogueLine> dialogue = isHardMode
+            ? dialogueConfig.winHard
+            : dialogueConfig.winEasy;
 
-        if (isHardMode)
-        {
-            dialogue.Add(new NarratorManager.DialogueLine { text = "...you figured it out" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "You figured the patterns" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "That is just…wow" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "No no i shouldn't be amazed" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "Moving on" });
-        }
-        else
-        {
-            dialogue.Add(new NarratorManager.DialogueLine { text = "There it is" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "Easy" });
-            dialogue.Add(new NarratorManager.DialogueLine { text = "Moving on?" });
-        }
-
-        if (NarratorManager.Instance != null)
-            NarratorManager.Instance.PlayDialogue(dialogue);
-
-        yield return new WaitForSeconds(dialogue.Count * 2f);
+        yield return StartCoroutine(PlayDialogueAndWait(dialogue));
     }
 
     private void RestartGame()
@@ -430,6 +440,7 @@ public class OrdinaryMinesweeper : MonoBehaviour
         // Don't reset pattern or death count in hard mode
         // Don't reset flag count in easy mode (player needs to learn!)
 
+        StopAllCoroutines();
         StartCoroutine(InitializeGame());
     }
 
@@ -444,11 +455,83 @@ public class OrdinaryMinesweeper : MonoBehaviour
         return isHardMode;
     }
 
+    public void SetStageManagement(StageManagement management)
+    {
+        stageManagement = management;
+    }
+
+    public void SetDifficulty(StageManagement.Difficulty difficulty)
+    {
+        currentDifficulty = difficulty;
+        isHardMode = (currentDifficulty == StageManagement.Difficulty.Hard);
+    }
+
+    public void SetDialogueConfig(DialogueConfig config)
+    {
+        dialogueConfig = config;
+    }
+
+    private List<NarratorManager.DialogueLine> GetEasyFlagDialogue()
+    {
+        switch (easyModeFlagCount)
+        {
+            case 1:
+                return dialogueConfig.easyFlag1;
+            case 2:
+                return dialogueConfig.easyFlag2;
+            case 3:
+                return dialogueConfig.easyFlag3;
+            default:
+                return dialogueConfig.easyFlagDefault;
+        }
+    }
+
+    private List<NarratorManager.DialogueLine> GetHardBombDialogue()
+    {
+        switch (hardModeDeathCount)
+        {
+            case 1:
+                return dialogueConfig.hardBombHit1;
+            case 2:
+                return dialogueConfig.hardBombHit2;
+            case 3:
+                return dialogueConfig.hardBombHit3;
+            default:
+                return dialogueConfig.hardBombHitDefault;
+        }
+    }
+
+    private IEnumerator PlayDialogueAndWait(List<NarratorManager.DialogueLine> dialogue)
+    {
+        if (dialogue == null || dialogue.Count == 0)
+            yield break;
+
+        if (NarratorManager.Instance == null)
+        {
+            yield return new WaitForSeconds(dialogue.Count * fallbackDialogueDelayPerLine);
+            yield break;
+        }
+
+        bool finished = false;
+        void OnFinished()
+        {
+            finished = true;
+        }
+
+        NarratorManager.Instance.OnDialogueFinished += OnFinished;
+        NarratorManager.Instance.PlayDialogue(dialogue);
+
+        while (!finished)
+            yield return null;
+
+        NarratorManager.Instance.OnDialogueFinished -= OnFinished;
+    }
+
     private void OnSwitchToPanelA()
     {
-        if (StageManagement.Instance != null)
+        if (stageManagement != null)
         {
-            //StageManagement.Instance.SwitchToGamePanel_A();
+            stageManagement.ShowDifficultyPanel();
         }
     }
 
@@ -467,3 +550,30 @@ public class MinePattern
     public string patternName;
     public List<Vector2Int> bombPositions = new List<Vector2Int>();
 }
+
+[System.Serializable]
+public class DialogueConfig
+{
+    public List<NarratorManager.DialogueLine> introEasy = new List<NarratorManager.DialogueLine>();
+    public List<NarratorManager.DialogueLine> introHard = new List<NarratorManager.DialogueLine>();
+
+    public List<NarratorManager.DialogueLine> winEasy = new List<NarratorManager.DialogueLine>();
+    public List<NarratorManager.DialogueLine> winHard = new List<NarratorManager.DialogueLine>();
+
+    public List<NarratorManager.DialogueLine> easyBombHit = new List<NarratorManager.DialogueLine>();
+    public List<NarratorManager.DialogueLine> hardBombHit1 = new List<NarratorManager.DialogueLine>();
+    public List<NarratorManager.DialogueLine> hardBombHit2 = new List<NarratorManager.DialogueLine>();
+    public List<NarratorManager.DialogueLine> hardBombHit3 = new List<NarratorManager.DialogueLine>();
+    public List<NarratorManager.DialogueLine> hardBombHitDefault = new List<NarratorManager.DialogueLine>();
+
+    public List<NarratorManager.DialogueLine> easyFlag1 = new List<NarratorManager.DialogueLine>();
+    public List<NarratorManager.DialogueLine> easyFlag2 = new List<NarratorManager.DialogueLine>();
+    public List<NarratorManager.DialogueLine> easyFlag3 = new List<NarratorManager.DialogueLine>();
+    public List<NarratorManager.DialogueLine> easyFlagDefault = new List<NarratorManager.DialogueLine>();
+}
+
+
+
+
+
+
