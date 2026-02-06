@@ -11,18 +11,18 @@ public class SecondController : MonoBehaviour
     [SerializeField] private StageManager stageManager;
 
     [Header("Dialogues")]
-    [SerializeField] private List<string> openingDialog;
-    [SerializeField] private List<string> successDialogB;
-    [SerializeField] private List<string> failDialogEarly;   // klik saat opening
-    [SerializeField] private List<string> dialogueAfterFailEarly;   // setelah dialog fail early
-    [SerializeField] private List<string> failDialogAfter;   // klik setelah opening
-    [SerializeField] private List<string> dialogD; // Dialog kalau player gamau klik tombol selanjutnya
-    [SerializeField] private List<string> dialogE; // Dialog sebelum auto lanjut ke stage berikutnya
-    [SerializeField] private List<string> AtClickConfusing; // dialog saat player klik bingung
-    [SerializeField] private List<string> AtClickAnnoying; // dialog saat player klik kesal di opening
-    [SerializeField] private List<string> AtFakeButtonUp; // dialog saat tombol palsu muncul
-    [SerializeField] private List<string> AtClickFakeButton; // dialog saat player klik tombol palsu
-    [SerializeField] private List<string> successDialogWithFakeButton; // dialog sukses saat tombol palsu aktif
+    [SerializeField] private List<NarratorManager.DialogueLine> openingDialog;
+    [SerializeField] private List<NarratorManager.DialogueLine> successDialogB;
+    [SerializeField] private List<NarratorManager.DialogueLine> failDialogEarly;   // klik saat opening
+    [SerializeField] private List<NarratorManager.DialogueLine> dialogueAfterFailEarly;   // setelah dialog fail early
+    [SerializeField] private List<NarratorManager.DialogueLine> failDialogAfter;   // klik setelah opening
+    [SerializeField] private List<NarratorManager.DialogueLine> dialogD; // Dialog kalau player gamau klik tombol selanjutnya
+    [SerializeField] private List<NarratorManager.DialogueLine> dialogE; // Dialog sebelum auto lanjut ke stage berikutnya
+    [SerializeField] private List<NarratorManager.DialogueLine> AtClickConfusing; // dialog saat player klik bingung
+    [SerializeField] private List<NarratorManager.DialogueLine> AtClickAnnoying; // dialog saat player klik kesal di opening
+    [SerializeField] private List<NarratorManager.DialogueLine> AtFakeButtonUp; // dialog saat tombol palsu muncul
+    [SerializeField] private List<NarratorManager.DialogueLine> AtClickFakeButton; // dialog saat player klik tombol palsu
+    [SerializeField] private List<NarratorManager.DialogueLine> successDialogWithFakeButton; // dialog sukses saat tombol palsu aktif
 
     [Header("Timing")]
     [SerializeField] private float idleToSuccessTime = 9f;
@@ -54,7 +54,7 @@ public class SecondController : MonoBehaviour
     private int openingRandomClickCount;
 
     // Variable untuk menyimpan follow-up dialog yang akan dimainkan
-    private List<string> pendingFollowUpDialog;
+    private List<NarratorManager.DialogueLine> pendingFollowUpDialog;
 
     // =========================
     // LIFECYCLE
@@ -121,7 +121,7 @@ public class SecondController : MonoBehaviour
     // DIALOGUE FLOW
     // =========================
 
-    private void PlayDialogue(List<string> dialog)
+    private void PlayDialogue(List<NarratorManager.DialogueLine> dialog)
     {
         if (dialog == null || dialog.Count == 0) return;
         if (NarratorManager.Instance == null)
@@ -284,14 +284,14 @@ public class SecondController : MonoBehaviour
     // FAIL & CLEANUP
     // =========================
 
-    private void Fail(List<string> dialog)
+    private void Fail(List<NarratorManager.DialogueLine> dialog)
     {
         StopAllRunning();
         state = StageState.Failed;
         PlayDialogue(dialog);
     }
 
-    private void WarningWithFollowUp(List<string> warningDialog, List<string> followUpDialog)
+    private void WarningWithFollowUp(List<NarratorManager.DialogueLine> warningDialog, List<NarratorManager.DialogueLine> followUpDialog)
     {
         StopAllRunning();
         state = StageState.WarningPhase;

@@ -6,7 +6,7 @@ public class OpeningController : MonoBehaviour
     [SerializeField] private MainUIManager uiManager;
 
     [Header("TextDialogue")]
-    [SerializeField] private List<string> openingDialogueLines;
+    [SerializeField] private List<NarratorManager.DialogueLine> openingDialogueLines;
 
     void Start()
     {

@@ -8,13 +8,13 @@ public class TheClawController : MonoBehaviour
     [SerializeField] private StageManager stageManager;
 
     [Header("Dialogues")]
-    [SerializeField] private List<string> openingDialogue;
-    [SerializeField] private List<string> narratorShutdownMovement;
-    [SerializeField] private List<string> narratorShutdownGrab;
-    [SerializeField] private List<string> afterThreeDrops;
-    [SerializeField] private List<string> hintCantTouch;
-    [SerializeField] private List<string> successQuick;
-    [SerializeField] private List<string> successSlow;
+    [SerializeField] private List<NarratorManager.DialogueLine> openingDialogue;
+    [SerializeField] private List<NarratorManager.DialogueLine> narratorShutdownMovement;
+    [SerializeField] private List<NarratorManager.DialogueLine> narratorShutdownGrab;
+    [SerializeField] private List<NarratorManager.DialogueLine> afterThreeDrops;
+    [SerializeField] private List<NarratorManager.DialogueLine> hintCantTouch;
+    [SerializeField] private List<NarratorManager.DialogueLine> successQuick;
+    [SerializeField] private List<NarratorManager.DialogueLine> successSlow;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject dollPrefab;
@@ -193,7 +193,7 @@ public class TheClawController : MonoBehaviour
     // DIALOGUE FLOW
     // =============================
 
-    private void PlayDialogue(List<string> dialog)
+    private void PlayDialogue(List<NarratorManager.DialogueLine> dialog)
     {
         if (dialog == null || dialog.Count == 0) return;
         if (NarratorManager.Instance == null)
