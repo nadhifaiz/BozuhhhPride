@@ -440,9 +440,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 501146376}
   - {fileID: 829803171}
   - {fileID: 661849056}
-  - {fileID: 501146376}
   - {fileID: 288312936}
   - {fileID: 428682372}
   m_Father: {fileID: 1942624446}
@@ -504,18 +504,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiManager: {fileID: 648960101}
   openingDialogueLines:
-  - "Oh finally someone\u2019s here. Now i can start my experiment."
-  - ...
-  - "Relax, there\u2019s nothing to worry about, it\u2019s just a game"
-  - ...
-  - "That\u2019s me trying to calm myself down by the way, not you"
-  - This is fine
-  - "Oh yeah it\u2019s not, i got anxiety"
-  - "Oh yeah it\u2019s not, i got anxiety"
-  - "Okay, so from now on i\u2019ll be your guide and source of spoilers"
-  - Yeah yeah you can trust me of course
-  - ...
-  - Well most of the time
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
+  - text: 
+    clip: {fileID: 0}
+    overrideDelay: -1
 --- !u!1 &361444877
 GameObject:
   m_ObjectHideFlags: 0
@@ -1327,6 +1351,7 @@ MonoBehaviour:
   audioSource: {fileID: 1206384976}
   narratorClip: {fileID: 0}
   defaultDelay: 2
+  defaultPostClipDelay: 0.2
 --- !u!4 &1206384975
 Transform:
   m_ObjectHideFlags: 0
