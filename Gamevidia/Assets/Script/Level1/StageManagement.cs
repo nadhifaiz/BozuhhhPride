@@ -81,7 +81,7 @@ public class StageManagement : MonoBehaviour
         NotifyGameControllers();
     }
 
-    private void ShowGamePanel_A()
+    public void ShowGamePanel_A()
     {
         gamePanel_A.SetActive(true);
         gamePanel_B.SetActive(false);
@@ -89,7 +89,7 @@ public class StageManagement : MonoBehaviour
         Debug.Log("Switched to Game Panel A");
     }
 
-    private void ShowGamePanel_B()
+    public void ShowGamePanel_B()
     {
         gamePanel_A.SetActive(false);
         gamePanel_B.SetActive(true);
